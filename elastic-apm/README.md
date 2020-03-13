@@ -1,4 +1,26 @@
 ```
+Mithuns-Air:elastic-apm mithunkhatri$ cat docker-compose.yml 
+version: '3'
+services:
+      elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.6.1
+        ports:
+          - "9200:9200"
+      kibana:
+        image: docker.elastic.co/kibana/kibana:7.6.1
+        ports:
+          - "5601:5601"
+        depends_on:
+          - elasticsearch
+      apm-server:
+          image: docker.elastic.co/apm/apm-server:7.6.1
+          environment:
+            - output.elasticsearch.hosts=["elasticsearch:9200"]
+          ports:
+            - "8200:8200"
+          depends_on:
+            - elasticsearch
+            
 Mithuns-Air:elastic-apm mithunkhatri$ docker-compose up -d
 Creating network "elastic-apm_default" with the default driver
 Pulling elasticsearch (docker.elastic.co/elasticsearch/elasticsearch:7.6.1)...
@@ -40,6 +62,7 @@ Status: Downloaded newer image for docker.elastic.co/apm/apm-server:7.6.1
 Creating elastic-apm_elasticsearch_1 ... done
 Creating elastic-apm_apm-server_1    ... done
 Creating elastic-apm_kibana_1        ... done
+
 Mithuns-Air:elastic-apm mithunkhatri$ docker ps
 CONTAINER ID        IMAGE                                                 COMMAND                  CREATED             STATUS              PORTS                              NAMES
 74d8d51934a8        docker.elastic.co/kibana/kibana:7.6.1                 "/usr/local/bin/dumb…"   6 seconds ago       Up 4 seconds        0.0.0.0:5601->5601/tcp             elastic-apm_kibana_1
